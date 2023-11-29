@@ -38,7 +38,7 @@ const updateItem = async (req, res) => {
     if (existingItem.created_by.toString() !== created_by) {
       return res
         .status(403)
-        .json({ message: "You do not have permission to update this item" });
+        .json({ message: "Unauthorized: You cannot update this item" });
     }
 
     existingItem.name = name;
