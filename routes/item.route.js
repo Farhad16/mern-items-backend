@@ -9,7 +9,10 @@ router.post("/create", itemAction.createItem);
 // Get all items
 router.get("/getItems", itemAction.getAllItems);
 
-// Update a item
+// Update an item
 router.put("/update/:id", itemAction.updateItem);
+
+// Delete an item
+router.delete("/delete/:id", itemAction.deleteItem);
 
 module.exports = router;

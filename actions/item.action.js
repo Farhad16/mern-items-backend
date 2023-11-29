@@ -24,34 +24,57 @@ const getAllItems = async (req, res) => {
   }
 };
 
+// updata an item
 const updateItem = async (req, res) => {
-  console.log("res", res);
-  console.log("req", req);
   try {
     const { id } = req.params;
     const { name, created_by } = req.body;
 
-    // Check if the item exists
     const existingItem = await Item.findById(id);
     if (!existingItem) {
-      return res.status(404).json({ error: "Item not found" });
+      return res.status(404).json({ message: "Item not found" });
     }
 
-    // Check if the user attempting to update the item is the creator
     if (existingItem.created_by.toString() !== created_by) {
       return res
         .status(403)
-        .json({ error: "You do not have permission to update this item" });
+        .json({ message: "You do not have permission to update this item" });
     }
 
-    // Update the item
     existingItem.name = name;
     const updatedItem = await existingItem.save();
     res.status(200).json(updatedItem);
   } catch (error) {
     console.error("Error updating item:", error.message);
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-module.exports = { createItem, getAllItems, updateItem };
+// delete an item
+const deleteItem = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { created_by } = req.body;
+
+    const itemToDelete = await Item.findOne({ _id: id });
+
+    if (!itemToDelete) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+
+    if (itemToDelete.created_by !== created_by) {
+      return res
+        .status(401)
+        .json({ message: "Unauthorized: You cannot delete this item" });
+    }
+
+    await Item.deleteOne({ _id: id, created_by });
+
+    res.status(200).json({ message: "Item deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting item:", error.message);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+module.exports = { createItem, getAllItems, updateItem, deleteItem };
