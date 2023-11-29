@@ -4,11 +4,12 @@ const router = express.Router();
 const itemAction = require("../actions/item.action");
 
 // Create a new item
-router.post("/items", itemAction.createItem);
+router.post("/create", itemAction.createItem);
 
 // Get all items
-router.get("/items", itemAction.getAllItems);
+router.get("/getItems", itemAction.getAllItems);
 
-// Other CRUD routes can be added similarly
+// Update a item
+router.put("/update/:id", itemAction.updateItem);
 
 module.exports = router;

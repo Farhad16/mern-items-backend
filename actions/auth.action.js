@@ -1,5 +1,4 @@
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
 
 const register = async (req, res) => {
@@ -23,16 +22,15 @@ const register = async (req, res) => {
 
     const savedUser = await newUser.save();
 
-    const secret = "farhadswe35";
-    const token = jwt.sign(
-      { userId: savedUser._id, name: savedUser.name, email: savedUser.email },
-      secret,
-      {
-        expiresIn: "1h",
-      }
-    );
-
-    res.status(201).json({ message: "User registered successfully", token });
+    // Return user information without JWT token
+    res.status(201).json({
+      message: "User registered successfully",
+      user: {
+        id: savedUser._id,
+        name: savedUser.name,
+        email: savedUser.email,
+      },
+    });
   } catch (error) {
     console.error("Error registering user:", error.message);
     res.status(500).json({ error: "Server error" });
@@ -40,7 +38,6 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  const secret = "farhadswe35";
   try {
     const { email, password } = req.body;
 
@@ -54,15 +51,15 @@ const login = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.sign(
-      { userId: user._id, name: user.name, email: user.email },
-      secret,
-      {
-        expiresIn: "1h",
-      }
-    );
-
-    res.status(200).json({ message: "Login successful", token });
+    // Return user information without JWT token
+    res.status(200).json({
+      message: "Login successful",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+    });
   } catch (error) {
     console.error("Error logging in:", error.message);
     res.status(500).json({ error: "Server error" });

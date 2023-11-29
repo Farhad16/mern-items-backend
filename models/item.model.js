@@ -11,8 +11,7 @@ const itemSchema = new mongoose.Schema({
     default: Date.now,
   },
   created_by: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    type: String,
     required: true,
   },
 });
