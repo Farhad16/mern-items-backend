@@ -1,4 +1,4 @@
-const bcrypt = require("bcrypt");
+const argon2 = require("argon2");
 const User = require("../models/user.model");
 
 const register = async (req, res) => {
@@ -11,8 +11,8 @@ const register = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Hash the password using argon2
+    const hashedPassword = await argon2.hash(password);
 
     const newUser = new User({
       name,
@@ -46,7 +46,8 @@ const login = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    // Verify the password using argon2
+    const isPasswordValid = await argon2.verify(user.password, password);
     if (!isPasswordValid) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
