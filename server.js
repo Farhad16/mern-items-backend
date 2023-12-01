@@ -14,10 +14,13 @@ app.use(express.json());
 // Connect to MongoDB
 connectDB();
 
-// Routes
-app.use("/api/items", itemRoutes);
+// Home endpoint
+app.get("/", (req, res) => {
+  res.send("Welcome to the Home Page!");
+});
 
 // Routes
+app.use("/api/items", itemRoutes);
 app.use("/api/auth", authRoutes);
 
 // Start the server
